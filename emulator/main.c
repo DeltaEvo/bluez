@@ -35,6 +35,7 @@
 #include "serial.h"
 #include "server.h"
 #include "vhci.h"
+#include "usbip.h"
 #include "amp.h"
 #include "le.h"
 
@@ -60,6 +61,7 @@ static void usage(void)
 		"\t-L                    Create LE only controller\n"
 		"\t-B                    Create BR/EDR only controller\n"
 		"\t-A                    Create AMP controller\n"
+		"\t-u                    Use USBIP instead of vhci\n"
 		"\t-h, --help            Show help options\n");
 }
 
@@ -175,7 +177,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	for (i = 0; i < vhci_count; i++) {
+	/*for (i = 0; i < vhci_count; i++) {
 		struct vhci *vhci;
 
 		vhci = vhci_open(vhci_type);
@@ -183,6 +185,12 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "Failed to open Virtual HCI device\n");
 			return EXIT_FAILURE;
 		}
+	}*/
+
+	struct usbip *usbip = usbip_open(3240, 4);
+	if (!usbip) {
+		fprintf(stderr, "Failed to open USBIP backend\n");
+		return EXIT_FAILURE;
 	}
 
 	if (serial_enabled) {
